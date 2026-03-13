@@ -1,0 +1,1637 @@
+<template>
+  <div class="dashboard-container">
+    <!-- Header -->
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h1>Tobias Stempelkarte</h1>
+        </div>
+        
+        <div class="user-section">
+          <ClientOnly>
+            <div class="user-info">
+              <div class="user-avatar">
+                {{ userInitial }}
+              </div>
+              <span class="user-email">{{ user?.email }}</span>
+            </div>
+          </ClientOnly>
+          <NuxtLink v-if="isAdmin" to="/admin" class="admin-button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19.4 15C19.2669 15.3016 19.2272 15.6362 19.286 15.9606C19.3448 16.285 19.4995 16.5843 19.73 16.82L19.79 16.88C19.976 17.0657 20.1235 17.2863 20.2241 17.5291C20.3248 17.7719 20.3766 18.0322 20.3766 18.295C20.3766 18.5578 20.3248 18.8181 20.2241 19.0609C20.1235 19.3037 19.976 19.5243 19.79 19.71C19.6043 19.896 19.3837 20.0435 19.1409 20.1441C18.8981 20.2448 18.6378 20.2966 18.375 20.2966C18.1122 20.2966 17.8519 20.2448 17.6091 20.1441C17.3663 20.0435 17.1457 19.896 16.96 19.71L16.9 19.65C16.6643 19.4195 16.365 19.2648 16.0406 19.206C15.7162 19.1472 15.3816 19.1869 15.08 19.32C14.7842 19.4468 14.532 19.6572 14.3543 19.9255C14.1766 20.1938 14.0813 20.5082 14.08 20.83V21C14.08 21.5304 13.8693 22.0391 13.4942 22.4142C13.1191 22.7893 12.6104 23 12.08 23C11.5496 23 11.0409 22.7893 10.6658 22.4142C10.2907 22.0391 10.08 21.5304 10.08 21V20.91C10.0723 20.579 9.96512 20.258 9.77251 19.9887C9.5799 19.7194 9.31074 19.5143 9 19.4C8.69838 19.2669 8.36381 19.2272 8.03941 19.286C7.71502 19.3448 7.41568 19.4995 7.18 19.73L7.12 19.79C6.93425 19.976 6.71368 20.1235 6.47088 20.2241C6.22808 20.3248 5.96783 20.3766 5.705 20.3766C5.44217 20.3766 5.18192 20.3248 4.93912 20.2241C4.69632 20.1235 4.47575 19.976 4.29 19.79C4.10405 19.6043 3.95653 19.3837 3.85588 19.1409C3.75523 18.8981 3.70343 18.6378 3.70343 18.375C3.70343 18.1122 3.75523 17.8519 3.85588 17.6091C3.95653 17.3663 4.10405 17.1457 4.29 16.96L4.35 16.9C4.58054 16.6643 4.73519 16.365 4.794 16.0406C4.85282 15.7162 4.81312 15.3816 4.68 15.08C4.55324 14.7842 4.34276 14.532 4.07447 14.3543C3.80618 14.1766 3.49179 14.0813 3.17 14.08H3C2.46957 14.08 1.96086 13.8693 1.58579 13.4942C1.21071 13.1191 1 12.6104 1 12.08C1 11.5496 1.21071 11.0409 1.58579 10.6658C1.96086 10.2907 2.46957 10.08 3 10.08H3.09C3.42099 10.0723 3.742 9.96512 4.0113 9.77251C4.28059 9.5799 4.48572 9.31074 4.6 9C4.73312 8.69838 4.77282 8.36381 4.714 8.03941C4.65519 7.71502 4.50054 7.41568 4.27 7.18L4.21 7.12C4.02405 6.93425 3.87653 6.71368 3.77588 6.47088C3.67523 6.22808 3.62343 5.96783 3.62343 5.705C3.62343 5.44217 3.67523 5.18192 3.77588 4.93912C3.87653 4.69632 4.02405 4.47575 4.21 4.29C4.39575 4.10405 4.61632 3.95653 4.85912 3.85588C5.10192 3.75523 5.36217 3.70343 5.625 3.70343C5.88783 3.70343 6.14808 3.75523 6.39088 3.85588C6.63368 3.95653 6.85425 4.10405 7.04 4.29L7.1 4.35C7.33568 4.58054 7.63502 4.73519 7.95941 4.794C8.28381 4.85282 8.61838 4.81312 8.92 4.68H9C9.29577 4.55324 9.54802 4.34276 9.72569 4.07447C9.90337 3.80618 9.99872 3.49179 10 3.17V3C10 2.46957 10.2107 1.96086 10.5858 1.58579C10.9609 1.21071 11.4696 1 12 1C12.5304 1 13.0391 1.21071 13.4142 1.58579C13.7893 1.96086 14 2.46957 14 3V3.09C14.0013 3.41179 14.0966 3.72618 14.2743 3.99447C14.452 4.26276 14.7042 4.47324 15 4.6C15.3016 4.73312 15.6362 4.77282 15.9606 4.714C16.285 4.65519 16.5843 4.50054 16.82 4.27L16.88 4.21C17.0657 4.02405 17.2863 3.87653 17.5291 3.77588C17.7719 3.67523 18.0322 3.62343 18.295 3.62343C18.5578 3.62343 18.8181 3.67523 19.0609 3.77588C19.3037 3.87653 19.5243 4.02405 19.71 4.21C19.896 4.39575 20.0435 4.61632 20.1441 4.85912C20.2448 5.10192 20.2966 5.36217 20.2966 5.625C20.2966 5.88783 20.2448 6.14808 20.1441 6.39088C20.0435 6.63368 19.896 6.85425 19.71 7.04L19.65 7.1C19.4195 7.33568 19.2648 7.63502 19.206 7.95941C19.1472 8.28381 19.1869 8.61838 19.32 8.92V9C19.4468 9.29577 19.6572 9.54802 19.9255 9.72569C20.1938 9.90337 20.5082 9.99872 20.83 10H21C21.5304 10 22.0391 10.2107 22.4142 10.5858C22.7893 10.9609 23 11.4696 23 12C23 12.5304 22.7893 13.0391 22.4142 13.4142C22.0391 13.7893 21.5304 14 21 14H20.91C20.5882 14.0013 20.2738 14.0966 20.0055 14.2743C19.7372 14.452 19.5268 14.7042 19.4 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Admin Panel
+          </NuxtLink>
+          <button @click="handleLogout" class="logout-button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Abmelden
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <div v-if="loading" class="loading-state">
+        <div class="spinner-big"></div>
+        <p>Lade deine Daten...</p>
+      </div>
+
+      <div v-else>
+        <div class="welcome-section">
+          <h2>Hey Tobias! 👋</h2>
+          <p class="welcome-subtitle">Deine Pünktlichkeits-Challenge: Dienstag & Donnerstag</p>
+        </div>
+
+        <!-- Streak Banner -->
+        <div v-if="stats.currentStreak >= 3" class="streak-banner">
+          <div class="streak-icon">🔥</div>
+          <div class="streak-content">
+            <h3>{{ stats.currentStreak }}x pünktlich in Folge!</h3>
+            <p>Du bist auf Feuer! Weiter so! �</p>
+          </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card primary">
+            <div class="stat-icon green">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3>Pünktlich</h3>
+              <p class="stat-number">{{ stats.onTimeCount }}</p>
+              <p class="stat-label">Mal geschafft! 🎉</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon orange">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3>Zu spät</h3>
+              <p class="stat-number">{{ stats.lateCount }}</p>
+              <p class="stat-label">Passiert...</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon blue">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="stat-content">
+              <h3>Beste Serie</h3>
+              <p class="stat-number">{{ stats.longestStreak }}</p>
+              <p class="stat-label">Pünktlich hintereinander</p>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Rewards Section -->
+        <div class="rewards-section">
+          <h3 class="section-title">� Deine Belohnungen</h3>
+          <p class="rewards-subtitle">Je öfter du pünktlich bist, desto bessere Belohnungen schaltest du frei!</p>
+          <div class="rewards-grid">
+            <div class="reward-card" :class="{ unlocked: stats.currentStreak >= 3 }">
+              <div class="reward-icon">🍕</div>
+              <h4>Pizza Party</h4>
+              <p class="reward-requirement">3x pünktlich</p>
+              <p class="reward-prize">Eine Pizza deiner Wahl!</p>
+              <div v-if="stats.currentStreak >= 3" class="reward-badge">✅ Freigeschaltet!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/3</div>
+            </div>
+
+            <div class="reward-card" :class="{ unlocked: stats.currentStreak >= 5 }">
+              <div class="reward-icon">🎮</div>
+              <h4>Steam Guthaben</h4>
+              <p class="reward-requirement">5x pünktlich</p>
+              <p class="reward-prize">20€ Steam Card</p>
+              <div v-if="stats.currentStreak >= 5" class="reward-badge">✅ Freigeschaltet!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/5</div>
+            </div>
+
+            <div class="reward-card" :class="{ unlocked: stats.currentStreak >= 8 }">
+              <div class="reward-icon">📺</div>
+              <h4>Crunchyroll Abo</h4>
+              <p class="reward-requirement">8x pünktlich</p>
+              <p class="reward-prize">1 Monat Premium</p>
+              <div v-if="stats.currentStreak >= 8" class="reward-badge">✅ Freigeschaltet!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/8</div>
+            </div>
+
+            <div class="reward-card" :class="{ unlocked: stats.currentStreak >= 12 }">
+              <div class="reward-icon">🎬</div>
+              <h4>Netflix Premium</h4>
+              <p class="reward-requirement">12x pünktlich</p>
+              <p class="reward-prize">1 Monat Premium</p>
+              <div v-if="stats.currentStreak >= 12" class="reward-badge">✅ Freigeschaltet!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/12</div>
+            </div>
+
+            <div class="reward-card" :class="{ unlocked: stats.currentStreak >= 20 }">
+              <div class="reward-icon">🎯</div>
+              <h4>Wunsch-Belohnung</h4>
+              <p class="reward-requirement">20x pünktlich</p>
+              <p class="reward-prize">Wünsch dir was! (bis 50€)</p>
+              <div v-if="stats.currentStreak >= 20" class="reward-badge">✅ Freigeschaltet!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/20</div>
+            </div>
+
+            <div class="reward-card legendary" :class="{ unlocked: stats.currentStreak >= 30 }">
+              <div class="reward-icon">👑</div>
+              <h4>LEGENDÄR</h4>
+              <p class="reward-requirement">30x pünktlich</p>
+              <p class="reward-prize">PlayStation 5 / Xbox Series X</p>
+              <div v-if="stats.currentStreak >= 30" class="reward-badge">✅ DU BIST EINE LEGENDE!</div>
+              <div v-else class="reward-progress">{{ stats.currentStreak }}/30</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent History -->
+        <div class="history-section">
+          <h3 class="section-title">📅 Letzte Einträge</h3>
+          <div v-if="recentStamps.length === 0" class="empty-state">
+            <p>Noch keine Einträge vorhanden.</p>
+            <p class="empty-subtitle">Dein Admin wird dich einstempeln! 😊</p>
+          </div>
+          <div v-else class="history-list">
+            <div 
+              v-for="stamp in recentStamps" 
+              :key="stamp.id"
+              class="history-item"
+              :class="stamp.status"
+            >
+              <div class="history-icon">
+                <span v-if="stamp.status === 'on-time'">✅</span>
+                <span v-else>⏰</span>
+              </div>
+              <div class="history-content">
+                <div class="history-main">
+                  <strong>{{ stamp.dayOfWeek }}, {{ formatDate(stamp.date) }}</strong>
+                  <span v-if="stamp.status === 'on-time'" class="status-badge on-time">Pünktlich!</span>
+                  <span v-else class="status-badge late">{{ stamp.minutesLate }} Min zu spät</span>
+                </div>
+                <p v-if="stamp.note" class="history-note">{{ stamp.note }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Log -->
+        <div class="audit-section">
+          <h3 class="section-title">📜 Änderungsprotokoll</h3>
+          <div v-if="auditLogs.length === 0" class="empty-state">
+            <p>Noch keine Änderungen protokolliert.</p>
+          </div>
+          <div v-else class="audit-list">
+            <div 
+              v-for="log in auditLogs" 
+              :key="log.id"
+              class="audit-item"
+              :class="log.action"
+            >
+              <div class="audit-icon">
+                <span v-if="log.action === 'streak_reset'">🔄</span>
+                <span v-else-if="log.action === 'stamp_deleted'">🗑️</span>
+                <span v-else-if="log.action === 'stats_modified'">✏️</span>
+                <span v-else>📝</span>
+              </div>
+              <div class="audit-content">
+                <div class="audit-main">
+                  <strong>{{ log.description }}</strong>
+                  <span class="audit-time">{{ formatAuditTime(log.timestamp) }}</span>
+                </div>
+                <p class="audit-detail">{{ log.details }}</p>
+                <p class="audit-by">von {{ log.adminEmail }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script lang="ts" setup>
+definePageMeta({
+  middleware: 'auth'
+})
+
+const { user, logout } = useFirebaseAuth()
+const { getUserStats, getRecentStamps, getAuditLogs, isUserAdmin } = useStempelCard()
+const router = useRouter()
+
+const userInitial = computed(() => {
+  return user.value?.email?.charAt(0).toUpperCase() || 'T'
+})
+
+const loading = ref(true)
+const isAdmin = ref(false)
+const stats = ref({
+  totalStamps: 0,
+  onTimeCount: 0,
+  lateCount: 0,
+  currentStreak: 0,
+  longestStreak: 0,
+  totalMinutesLate: 0,
+  averageMinutesLate: 0,
+  rewardsEarned: [],
+  nextRewardProgress: 0
+})
+const recentStamps = ref<any[]>([])
+const auditLogs = ref<any[]>([])
+
+onMounted(async () => {
+  try {
+    // Check if user is admin
+    if (user.value?.email) {
+      isAdmin.value = await isUserAdmin(user.value.email)
+    }
+
+    // Load user stats
+    const userId = user.value?.uid || 'tobias'
+    const userStats: any = await getUserStats(userId)
+    stats.value = userStats
+
+    // Load recent stamps
+    const stamps = await getRecentStamps(userId, 10)
+    recentStamps.value = stamps
+
+    // Load audit logs
+    const logs = await getAuditLogs(userId, 10)
+    auditLogs.value = logs
+  } catch (error) {
+    console.error('Error loading dashboard data:', error)
+  } finally {
+    loading.value = false
+  }
+})
+
+const handleLogout = async () => {
+  await logout()
+  router.push('/login')
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+const getStreakMessage = () => {
+  const streak = stats.value.currentStreak
+  if (streak === 0) return 'Zeit für einen Neustart! 💪'
+  if (streak >= 30) return 'ABSOLUT LEGENDÄR! 👑🔥'
+  if (streak >= 20) return 'DU BIST UNAUFHALTBAR! 🚀'
+  if (streak >= 12) return 'Phänomenal! Weiter so! ⭐'
+  if (streak >= 8) return 'Fantastisch! Keep it up! 🎉'
+  if (streak >= 5) return 'Super Leistung! 💯'
+  if (streak >= 3) return 'Guter Start! 🔥'
+  return 'Jetzt durchziehen! 💪'
+}
+
+const formatAuditTime = (timestamp: any) => {
+  if (!timestamp) return ''
+  const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMs / 3600000)
+  const diffDays = Math.floor(diffMs / 86400000)
+  
+  if (diffMins < 1) return 'Gerade eben'
+  if (diffMins < 60) return `vor ${diffMins} Min`
+  if (diffHours < 24) return `vor ${diffHours} Std`
+  if (diffDays < 7) return `vor ${diffDays} Tag${diffDays > 1 ? 'en' : ''}`
+  return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+</script>
+
+<style scoped>
+.dashboard-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #EFFDF5 0%, #D9FBE8 100%);
+}
+
+/* Header */
+.dashboard-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #D9FBE8;
+  box-shadow: 0 4px 6px -1px rgba(0, 193, 106, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: slideDown 0.4s ease-out;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 220, 130, 0.3);
+}
+
+.logo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.logo-section h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.user-email {
+  color: #016538;
+  font-weight: 600;
+  font-size: 0.925rem;
+}
+
+.admin-button,
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.925rem;
+  text-decoration: none;
+  border: 2px solid #D9FBE8;
+}
+
+.admin-button {
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  border-color: transparent;
+}
+
+.admin-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 220, 130, 0.3);
+}
+
+.logout-button {
+  background: white;
+  color: #007F45;
+}
+
+.logout-button svg,
+.admin-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.logout-button:hover {
+  background: #EFFDF5;
+  border-color: #00DC82;
+  transform: translateY(-2px);
+}
+
+/* Main Content */
+.dashboard-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.spinner-big {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(0, 220, 130, 0.2);
+  border-top-color: #00DC82;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  font-size: 1.125rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+.welcome-section {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 50%, #75EDAE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 1.25rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+/* Streak Hero - MASSIVE Display */
+.streak-hero {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+  border-radius: 32px;
+  padding: 4rem 2rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  box-shadow: 
+    0 20px 40px rgba(245, 158, 11, 0.4),
+    0 0 0 1px rgba(251, 191, 36, 0.5);
+  position: relative;
+  overflow: hidden;
+  animation: heroGlow 3s ease-in-out infinite;
+}
+
+.streak-hero::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 60%);
+  animation: heroRotate 8s linear infinite;
+}
+
+.streak-flame {
+  font-size: 6rem;
+  margin-bottom: 1rem;
+  animation: flameFlicker 1.5s ease-in-out infinite;
+  position: relative;
+  z-index: 1;
+}
+
+.streak-number {
+  font-size: 8rem;
+  font-weight: 900;
+  color: white;
+  line-height: 1;
+  margin-bottom: 1rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 1;
+  letter-spacing: -0.05em;
+}
+
+.streak-label {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.2em;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.streak-subtitle {
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes heroGlow {
+  0%, 100% {
+    box-shadow: 
+      0 20px 40px rgba(245, 158, 11, 0.4),
+      0 0 0 1px rgba(251, 191, 36, 0.5);
+  }
+  50% {
+    box-shadow: 
+      0 25px 50px rgba(245, 158, 11, 0.5),
+      0 0 0 2px rgba(251, 191, 36, 0.7);
+  }
+}
+
+@keyframes heroRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes flameFlicker {
+  0%, 100% {
+    transform: scale(1) rotate(-5deg);
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.75rem;
+  border: 2px solid rgba(0, 220, 130, 0.1);
+  box-shadow: 0 8px 16px -4px rgba(0, 193, 106, 0.08);
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 193, 106, 0.15);
+  border-color: rgba(0, 220, 130, 0.3);
+}
+
+.stat-card.primary {
+  border-color: rgba(0, 220, 130, 0.3);
+  background: linear-gradient(135deg, rgba(0, 220, 130, 0.05), rgba(255, 255, 255, 0.95));
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.stat-icon.green {
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  box-shadow: 0 4px 12px rgba(0, 220, 130, 0.3);
+}
+
+.stat-icon.orange {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.stat-icon.blue {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.stat-icon.purple {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.stat-content h3 {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #007F45;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A5331;
+  margin-bottom: 0.25rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+/* Rewards Section */
+.rewards-section,
+.history-section,
+.audit-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #016538;
+  margin-bottom: 1.5rem;
+}
+
+.rewards-subtitle {
+  font-size: 1rem;
+  color: #007F45;
+  margin-bottom: 1.5rem;
+}
+
+.rewards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.reward-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.reward-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 220, 130, 0.1), rgba(117, 237, 174, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.reward-card.legendary {
+  border: 3px solid #8B5CF6;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(255, 255, 255, 0.6));
+}
+
+.reward-card.legendary::before {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.2));
+}
+
+.reward-card.unlocked {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #00DC82;
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 220, 130, 0.2);
+}
+
+.reward-card.legendary.unlocked {
+  border-color: #8B5CF6;
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
+}
+
+.reward-card.unlocked::before {
+  opacity: 1;
+}
+
+.reward-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  filter: grayscale(100%);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.reward-card.unlocked .reward-icon {
+  filter: grayscale(0%);
+  opacity: 1;
+  animation: bounce 0.6s ease;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.reward-card h4 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #016538;
+  margin-bottom: 0.5rem;
+}
+
+.reward-requirement {
+  font-size: 0.875rem;
+  color: #F59E0B;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.reward-prize {
+  font-size: 0.925rem;
+  color: #007F45;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.reward-badge {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.reward-card.legendary .reward-badge {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+}
+
+.reward-progress {
+  font-size: 0.875rem;
+  color: #9CA3AF;
+  font-weight: 600;
+}
+
+/* History Section */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  border: 2px dashed #D9FBE8;
+}
+
+.empty-state p {
+  font-size: 1.125rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+.empty-subtitle {
+  font-size: 1rem !important;
+  color: #9CA3AF !important;
+  margin-top: 0.5rem;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.history-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  border: 2px solid #EFFDF5;
+  transition: all 0.2s ease;
+}
+
+.history-item:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 8px rgba(0, 193, 106, 0.1);
+}
+
+.history-item.on-time {
+  border-left: 4px solid #00DC82;
+}
+
+.history-item.late {
+  border-left: 4px solid #F59E0B;
+}
+
+.history-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.history-content {
+  flex: 1;
+}
+
+.history-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.history-main strong {
+  color: #016538;
+  font-size: 1rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-badge.on-time {
+  background: #D9FBE8;
+  color: #00C16A;
+}
+
+.status-badge.late {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
+
+.history-note {
+  font-size: 0.925rem;
+  color: #007F45;
+  font-style: italic;
+}
+
+/* Audit Log */
+.audit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.audit-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  border: 2px solid #E5E7EB;
+  transition: all 0.2s ease;
+}
+
+.audit-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.audit-item.streak_reset {
+  border-left: 4px solid #EF4444;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(255, 255, 255, 0.95));
+}
+
+.audit-item.stamp_deleted {
+  border-left: 4px solid #F59E0B;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(255, 255, 255, 0.95));
+}
+
+.audit-item.stats_modified {
+  border-left: 4px solid #3B82F6;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(255, 255, 255, 0.95));
+}
+
+.audit-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.audit-content {
+  flex: 1;
+}
+
+.audit-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.audit-main strong {
+  color: #1F2937;
+  font-size: 1rem;
+}
+
+.audit-time {
+  font-size: 0.875rem;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+.audit-detail {
+  font-size: 0.925rem;
+  color: #6B7280;
+  margin-bottom: 0.25rem;
+}
+
+.audit-by {
+  font-size: 0.875rem;
+  color: #9CA3AF;
+  font-style: italic;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+/* Mobile Optimization */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .logo-section h1 {
+    font-size: 1.25rem;
+  }
+
+  .user-email {
+    display: none;
+  }
+
+  .admin-button span,
+  .logout-button span {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 2rem 1.5rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.125rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .streak-hero {
+    padding: 3rem 1.5rem;
+  }
+
+  .streak-flame {
+    font-size: 4rem;
+  }
+
+  .streak-number {
+    font-size: 5rem;
+  }
+
+  .streak-label {
+    font-size: 1.125rem;
+  }
+
+  .streak-subtitle {
+    font-size: 1rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 1rem;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-section h1 {
+    font-size: 1.125rem;
+  }
+
+  .dashboard-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .streak-hero {
+    padding: 2rem 1rem;
+    border-radius: 24px;
+  }
+
+  .streak-flame {
+    font-size: 3rem;
+  }
+
+  .streak-number {
+    font-size: 4rem;
+  }
+
+  .streak-label {
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+  }
+
+  .streak-subtitle {
+    font-size: 0.925rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
+
+  .rewards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-header,
+  .dashboard-main,
+  .stat-card,
+  .streak-banner,
+  .reward-card {
+    animation: none;
+  }
+
+  .stat-card,
+  .logout-button,
+  .admin-button,
+  .history-item {
+    transition: none;
+  }
+}
+
+
+/* Header */
+.dashboard-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #D9FBE8;
+  box-shadow: 0 4px 6px -1px rgba(0, 193, 106, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  animation: slideDown 0.4s ease-out;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 220, 130, 0.3);
+}
+
+.logo-icon svg {
+  width: 24px;
+  height: 24px;
+  color: white;
+}
+
+.logo-section h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.user-email {
+  color: #016538;
+  font-weight: 600;
+  font-size: 0.925rem;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: white;
+  border: 2px solid #D9FBE8;
+  border-radius: 12px;
+  color: #007F45;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.925rem;
+}
+
+.logout-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.logout-button:hover {
+  background: #EFFDF5;
+  border-color: #00DC82;
+  transform: translateY(-2px);
+}
+
+/* Main Content */
+.dashboard-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.welcome-section {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 50%, #75EDAE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  line-height: 1.2;
+}
+
+.welcome-subtitle {
+  font-size: 1.25rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 1.75rem;
+  border: 2px solid rgba(0, 220, 130, 0.1);
+  box-shadow: 0 8px 16px -4px rgba(0, 193, 106, 0.08);
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -4px rgba(0, 193, 106, 0.15);
+  border-color: rgba(0, 220, 130, 0.3);
+}
+
+.stat-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stat-icon svg {
+  width: 28px;
+  height: 28px;
+  color: white;
+}
+
+.stat-icon.green {
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  box-shadow: 0 4px 12px rgba(0, 220, 130, 0.3);
+}
+
+.stat-icon.orange {
+  background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 100%);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.stat-icon.blue {
+  background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.stat-icon.purple {
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.stat-content h3 {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: #007F45;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0A5331;
+  margin-bottom: 0.25rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+/* Actions Section */
+.actions-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #016538;
+  margin-bottom: 1.5rem;
+}
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+
+.action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.action-card svg {
+  width: 32px;
+  height: 32px;
+}
+
+.action-card.primary {
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  box-shadow: 0 8px 16px -4px rgba(0, 193, 106, 0.3);
+}
+
+.action-card.primary:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 24px -4px rgba(0, 193, 106, 0.4);
+}
+
+.action-card.secondary {
+  background: rgba(255, 255, 255, 0.95);
+  color: #007F45;
+  border: 2px solid #D9FBE8;
+}
+
+.action-card.secondary:hover {
+  background: #EFFDF5;
+  border-color: #00DC82;
+  transform: translateY(-4px);
+}
+
+/* Quote Card */
+.quote-card {
+  background: linear-gradient(135deg, rgba(0, 220, 130, 0.1), rgba(117, 237, 174, 0.1));
+  border: 2px solid rgba(0, 220, 130, 0.2);
+  border-radius: 24px;
+  padding: 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.quote-card svg {
+  width: 48px;
+  height: 48px;
+  color: #00DC82;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.quote-text {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #016538;
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.quote-author {
+  font-size: 1rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Optimization */
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .header-content {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .logo-section h1 {
+    font-size: 1.25rem;
+  }
+
+  .user-email {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 2rem 1.5rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 1.125rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .quote-text {
+    font-size: 1.125rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-content {
+    padding: 1rem;
+  }
+
+  .logo-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logo-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .logo-section h1 {
+    font-size: 1.125rem;
+  }
+
+  .logout-button span {
+    display: none;
+  }
+
+  .dashboard-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .quote-card {
+    padding: 1.5rem;
+  }
+
+  .stat-card {
+    padding: 1.5rem;
+  }
+
+  .action-card {
+    padding: 1.5rem 1rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-header,
+  .dashboard-main,
+  .stat-card,
+  .action-card {
+    animation: none;
+  }
+
+  .stat-card,
+  .action-card,
+  .logout-button {
+    transition: none;
+  }
+}
+</style>

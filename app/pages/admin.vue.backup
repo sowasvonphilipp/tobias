@@ -1,0 +1,1133 @@
+<template>
+  <div class="admin-container">
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="header-content">
+        <div class="logo-section">
+          <NuxtLink to="/dashboard" class="back-button">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 12H5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 19L5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Zurück
+          </NuxtLink>
+          <h1>⚙️ Admin Panel</h1>
+        </div>
+        
+        <button @click="handleLogout" class="logout-button">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Abmelden
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <div v-if="!isAdmin && !loading" class="access-denied">
+        <div class="denied-icon">🚫</div>
+        <h2>Zugriff verweigert</h2>
+        <p>Du hast keine Admin-Rechte.</p>
+        <NuxtLink to="/dashboard" class="btn-primary">Zurück zum Dashboard</NuxtLink>
+      </div>
+
+      <div v-else-if="loading" class="loading-state">
+        <div class="spinner-big"></div>
+        <p>Lade Admin-Panel...</p>
+      </div>
+
+      <div v-else>
+        <div class="welcome-section">
+          <h2>Admin Panel 👨‍💼</h2>
+          <p class="welcome-subtitle">Stempel Tobias ein - Dienstag & Donnerstag</p>
+        </div>
+
+        <!-- Current Day Info -->
+        <div class="day-info" :class="dayClass">
+          <div class="day-icon">{{ dayIcon }}</div>
+          <div class="day-content">
+            <h3>{{ currentDayName }}</h3>
+            <p>{{ dayMessage }}</p>
+          </div>
+        </div>
+
+        <!-- Stamp In Form -->
+        <div class="stamp-form-card">
+          <h3 class="form-title">🎯 Tobias einstempeln</h3>
+          
+          <form @submit.prevent="handleStampIn" class="stamp-form">
+            <div class="form-group">
+              <label>Status</label>
+              <div class="radio-group">
+                <label class="radio-label" :class="{ active: stampStatus === 'on-time' }">
+                  <input type="radio" v-model="stampStatus" value="on-time" />
+                  <span class="radio-custom on-time">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Pünktlich ✅
+                  </span>
+                </label>
+                
+                <label class="radio-label" :class="{ active: stampStatus === 'late' }">
+                  <input type="radio" v-model="stampStatus" value="late" />
+                  <span class="radio-custom late">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                      <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Zu spät ⏰
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div v-if="stampStatus === 'late'" class="form-group">
+              <label for="minutes">Minuten zu spät</label>
+              <input 
+                id="minutes"
+                v-model.number="minutesLate" 
+                type="number" 
+                min="1" 
+                required 
+                placeholder="z.B. 15"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="note">Notiz (optional)</label>
+              <textarea 
+                id="note"
+                v-model="note" 
+                rows="3" 
+                placeholder="z.B. Alarm nicht gehört, Bahn verpasst..."
+              ></textarea>
+            </div>
+
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
+
+            <div v-if="success" class="success-message">
+              ✅ {{ success }}
+            </div>
+
+            <button type="submit" class="btn-submit" :disabled="submitting">
+              <span v-if="!submitting">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 11L12 14L22 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M21 12V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Einstempeln
+              </span>
+              <span v-else class="loading-spinner">
+                <div class="spinner"></div>
+                Speichere...
+              </span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Today's Stamps -->
+        <div class="today-stamps">
+          <h3 class="section-title">📋 Einträge diese Woche</h3>
+          <div v-if="weekStamps.length === 0" class="empty-state">
+            <p>Noch keine Einträge diese Woche.</p>
+          </div>
+          <div v-else class="stamps-list">
+            <div 
+              v-for="stamp in weekStamps" 
+              :key="stamp.id"
+              class="stamp-item"
+              :class="stamp.status"
+            >
+              <div class="stamp-icon">
+                <span v-if="stamp.status === 'on-time'">✅</span>
+                <span v-else>⏰</span>
+              </div>
+              <div class="stamp-content">
+                <div class="stamp-main">
+                  <strong>{{ stamp.dayOfWeek }}, {{ formatDate(stamp.date) }}</strong>
+                  <span v-if="stamp.status === 'on-time'" class="status-badge on-time">Pünktlich</span>
+                  <span v-else class="status-badge late">{{ stamp.minutesLate }} Min zu spät</span>
+                </div>
+                <p v-if="stamp.note" class="stamp-note">{{ stamp.note }}</p>
+                <p class="stamp-time">{{ formatTime(stamp.timestamp) }}</p>
+              </div>
+              <button 
+                @click="handleDeleteStamp(stamp.id)" 
+                class="delete-button"
+                :disabled="deleting"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Tools -->
+        <div class="admin-tools">
+          <h3 class="section-title">⚙️ Admin-Werkzeuge</h3>
+          
+          <div class="tools-grid">
+            <!-- Reset Streak -->
+            <div class="tool-card danger">
+              <div class="tool-header">
+                <h4>🔄 Streak zurücksetzen</h4>
+                <p>Setzt den aktuellen Streak auf 0</p>
+              </div>
+              <div class="tool-content">
+                <textarea 
+                  v-model="resetReason" 
+                  rows="2" 
+                  placeholder="Grund für Reset (optional)..."
+                  class="tool-input"
+                ></textarea>
+                <button 
+                  @click="handleResetStreak" 
+                  class="btn-danger"
+                  :disabled="resetting"
+                >
+                  {{ resetting ? 'Wird zurückgesetzt...' : 'Streak zurücksetzen' }}
+                </button>
+              </div>
+            </div>
+
+            <!-- View User Stats -->
+            <div class="tool-card info">
+              <div class="tool-header">
+                <h4>📊 Benutzer-Statistiken</h4>
+                <p>Aktuelle Stats von Tobias</p>
+              </div>
+              <div class="tool-content stats-display">
+                <div class="stat-row">
+                  <span>Aktueller Streak:</span>
+                  <strong>{{ userStats.currentStreak || 0 }}x</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Pünktlich:</span>
+                  <strong>{{ userStats.onTimeCount || 0 }}x</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Zu spät:</span>
+                  <strong>{{ userStats.lateCount || 0 }}x</strong>
+                </div>
+                <div class="stat-row">
+                  <span>Beste Serie:</span>
+                  <strong>{{ userStats.longestStreak || 0 }}x</strong>
+                </div>
+                <button @click="refreshStats" class="btn-secondary">
+                  🔄 Aktualisieren
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script lang="ts" setup>
+definePageMeta({
+  middleware: 'auth'
+})
+
+const { user, logout } = useFirebaseAuth()
+const { 
+  stampIn, 
+  getThisWeekStamps, 
+  isUserAdmin, 
+  resetStreak, 
+  deleteStamp,
+  getUserStats 
+} = useStempelCard()
+const router = useRouter()
+
+const loading = ref(true)
+const isAdmin = ref(false)
+const stampStatus = ref<'on-time' | 'late'>('on-time')
+const minutesLate = ref(0)
+const note = ref('')
+const submitting = ref(false)
+const error = ref('')
+const success = ref('')
+const weekStamps = ref<any[]>([])
+const userStats = ref<any>({})
+const resetReason = ref('')
+const resetting = ref(false)
+const deleting = ref(false)
+
+const currentDate = new Date()
+const currentDay = currentDate.getDay() // 0 = Sunday, 2 = Tuesday, 4 = Thursday
+
+const currentDayName = computed(() => {
+  return currentDate.toLocaleDateString('de-DE', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
+})
+
+const dayClass = computed(() => {
+  if (currentDay === 2 || currentDay === 4) return 'stamp-day'
+  return 'no-stamp-day'
+})
+
+const dayIcon = computed(() => {
+  if (currentDay === 2 || currentDay === 4) return '📅'
+  return '📆'
+})
+
+const dayMessage = computed(() => {
+  if (currentDay === 2) return 'Heute ist Dienstag - Stempel-Tag!'
+  if (currentDay === 4) return 'Heute ist Donnerstag - Stempel-Tag!'
+  return 'Heute ist kein Stempel-Tag (nur Dienstag & Donnerstag)'
+})
+
+const loadWeekStamps = async () => {
+  try {
+    const stamps = await getThisWeekStamps('tobias')
+    weekStamps.value = stamps
+  } catch (err) {
+    console.error('Error loading week stamps:', err)
+  }
+}
+
+const handleStampIn = async () => {
+  error.value = ''
+  success.value = ''
+  submitting.value = true
+
+  try {
+    const minutes = stampStatus.value === 'late' ? minutesLate.value : 0
+    
+    await stampIn('tobias', stampStatus.value, minutes, note.value)
+    
+    success.value = stampStatus.value === 'on-time' 
+      ? '🎉 Tobias wurde als pünktlich eingestempelt!' 
+      : `⏰ Tobias wurde mit ${minutes} Minuten Verspätung eingestempelt.`
+    
+    // Reset form
+    stampStatus.value = 'on-time'
+    minutesLate.value = 0
+    note.value = ''
+    
+    // Reload stamps
+    await loadWeekStamps()
+    
+    // Clear success message after 5 seconds
+    setTimeout(() => {
+      success.value = ''
+    }, 5000)
+  } catch (err: any) {
+    error.value = 'Fehler beim Einstempeln: ' + err.message
+  } finally {
+    submitting.value = false
+  }
+}
+
+const handleLogout = async () => {
+  await logout()
+  router.push('/login')
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+const formatTime = (timestamp: any) => {
+  const date = timestamp.toDate()
+  return date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })
+}
+
+const handleResetStreak = async () => {
+  if (!confirm('Bist du sicher, dass du den Streak zurücksetzen möchtest?')) {
+    return
+  }
+
+  resetting.value = true
+  error.value = ''
+  success.value = ''
+
+  try {
+    if (!user.value?.email) throw new Error('Nicht eingeloggt')
+    
+    const reason = resetReason.value || 'Kein Grund angegeben'
+    await resetStreak('tobias', user.value.email, reason)
+    
+    success.value = '✅ Streak wurde erfolgreich zurückgesetzt!'
+    resetReason.value = ''
+    
+    // Refresh stats
+    await refreshStats()
+    
+    setTimeout(() => {
+      success.value = ''
+    }, 5000)
+  } catch (err: any) {
+    error.value = 'Fehler beim Zurücksetzen: ' + err.message
+  } finally {
+    resetting.value = false
+  }
+}
+
+const handleDeleteStamp = async (stampId: string) => {
+  if (!confirm('Bist du sicher, dass du diesen Eintrag löschen möchtest?')) {
+    return
+  }
+
+  deleting.value = true
+  error.value = ''
+  success.value = ''
+
+  try {
+    if (!user.value?.email) throw new Error('Nicht eingeloggt')
+    
+    await deleteStamp(stampId, 'tobias', user.value.email)
+    
+    success.value = '✅ Eintrag wurde gelöscht!'
+    
+    // Reload stamps
+    await loadWeekStamps()
+    await refreshStats()
+    
+    setTimeout(() => {
+      success.value = ''
+    }, 3000)
+  } catch (err: any) {
+    error.value = 'Fehler beim Löschen: ' + err.message
+  } finally {
+    deleting.value = false
+  }
+}
+
+const refreshStats = async () => {
+  try {
+    const stats = await getUserStats('tobias')
+    userStats.value = stats
+  } catch (err) {
+    console.error('Error refreshing stats:', err)
+  }
+}
+
+// Load stats on mount
+onMounted(async () => {
+  try {
+    if (user.value?.email) {
+      isAdmin.value = await isUserAdmin(user.value.email)
+    }
+
+    if (isAdmin.value) {
+      await loadWeekStamps()
+      await refreshStats()
+    }
+  } catch (err) {
+    console.error('Error loading admin panel:', err)
+  } finally {
+    loading.value = false
+  }
+})
+</script>
+
+<style scoped>
+.admin-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #EFFDF5 0%, #D9FBE8 100%);
+}
+
+.admin-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid #D9FBE8;
+  box-shadow: 0 4px 6px -1px rgba(0, 193, 106, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: white;
+  border: 2px solid #D9FBE8;
+  border-radius: 12px;
+  color: #007F45;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.925rem;
+}
+
+.back-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.back-button:hover {
+  background: #EFFDF5;
+  border-color: #00DC82;
+  transform: translateX(-2px);
+}
+
+.logo-section h1 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: white;
+  border: 2px solid #D9FBE8;
+  border-radius: 12px;
+  color: #007F45;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.925rem;
+}
+
+.logout-button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.logout-button:hover {
+  background: #EFFDF5;
+  border-color: #00DC82;
+  transform: translateY(-2px);
+}
+
+.admin-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 3rem 2rem;
+}
+
+.loading-state,
+.access-denied {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.spinner-big {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(0, 220, 130, 0.2);
+  border-top-color: #00DC82;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  font-size: 1.125rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+.denied-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+}
+
+.access-denied h2 {
+  font-size: 2rem;
+  color: #DC2626;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+}
+
+.access-denied p {
+  font-size: 1.125rem;
+  color: #007F45;
+  margin-bottom: 2rem;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 220, 130, 0.3);
+}
+
+.welcome-section {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.welcome-section h2 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+}
+
+.welcome-subtitle {
+  font-size: 1.25rem;
+  color: #007F45;
+  font-weight: 500;
+}
+
+.day-info {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  border: 2px solid #D9FBE8;
+}
+
+.day-info.stamp-day {
+  background: linear-gradient(135deg, rgba(0, 220, 130, 0.1), rgba(255, 255, 255, 0.95));
+  border-color: #00DC82;
+}
+
+.day-info.no-stamp-day {
+  background: linear-gradient(135deg, rgba(156, 163, 175, 0.1), rgba(255, 255, 255, 0.95));
+  border-color: #9CA3AF;
+}
+
+.day-icon {
+  font-size: 2.5rem;
+}
+
+.day-content h3 {
+  font-size: 1.25rem;
+  color: #016538;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.day-content p {
+  color: #007F45;
+  font-weight: 500;
+}
+
+.stamp-form-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 24px;
+  padding: 2.5rem;
+  margin-bottom: 3rem;
+  border: 2px solid rgba(0, 220, 130, 0.1);
+  box-shadow: 0 8px 16px -4px rgba(0, 193, 106, 0.08);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #016538;
+  margin-bottom: 2rem;
+}
+
+.stamp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 700;
+  color: #016538;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.radio-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.radio-label {
+  cursor: pointer;
+}
+
+.radio-label input {
+  display: none;
+}
+
+.radio-custom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1.05rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.radio-custom svg {
+  width: 24px;
+  height: 24px;
+}
+
+.radio-label.active .radio-custom {
+  transform: scale(1.02);
+}
+
+.radio-custom.on-time {
+  color: #007F45;
+}
+
+.radio-label.active .radio-custom.on-time {
+  background: linear-gradient(135deg, rgba(0, 220, 130, 0.1), rgba(117, 237, 174, 0.1));
+  border-color: #00DC82;
+}
+
+.radio-custom.late {
+  color: #F59E0B;
+}
+
+.radio-label.active .radio-custom.late {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.1));
+  border-color: #FBBF24;
+}
+
+.form-group input[type="number"],
+.form-group textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid #D9FBE8;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #00DC82;
+  box-shadow: 0 0 0 4px rgba(0, 220, 130, 0.1);
+}
+
+.error-message,
+.success-message {
+  padding: 1rem 1.25rem;
+  border-radius: 16px;
+  font-weight: 600;
+}
+
+.error-message {
+  background: #FEE2E2;
+  border: 2px solid #FCA5A5;
+  color: #DC2626;
+}
+
+.success-message {
+  background: #D9FBE8;
+  border: 2px solid #00DC82;
+  color: #00C16A;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.btn-submit {
+  padding: 1.125rem 2rem;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.btn-submit svg {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-submit:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(0, 220, 130, 0.4);
+}
+
+.btn-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.today-stamps {
+  margin-top: 3rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #016538;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  border: 2px dashed #D9FBE8;
+  color: #007F45;
+  font-weight: 500;
+}
+
+.stamps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.stamp-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  border: 2px solid #EFFDF5;
+  transition: all 0.2s ease;
+}
+
+.stamp-item.on-time {
+  border-left: 4px solid #00DC82;
+}
+
+.stamp-item.late {
+  border-left: 4px solid #F59E0B;
+}
+
+.stamp-icon {
+  font-size: 1.5rem;
+}
+
+.stamp-content {
+  flex: 1;
+}
+
+.stamp-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stamp-main strong {
+  color: #016538;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-badge.on-time {
+  background: #D9FBE8;
+  color: #00C16A;
+}
+
+.status-badge.late {
+  background: #FEF3C7;
+  color: #F59E0B;
+}
+
+.stamp-note {
+  color: #007F45;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+.stamp-time {
+  font-size: 0.875rem;
+  color: #9CA3AF;
+  font-weight: 500;
+}
+
+/* Delete Button */
+.delete-button {
+  padding: 0.5rem 0.75rem;
+  background: #FEE2E2;
+  border: 2px solid #FCA5A5;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #FCA5A5;
+  transform: scale(1.1);
+}
+
+.delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stamp-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Admin Tools */
+.admin-tools {
+  margin-top: 3rem;
+}
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.tool-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 2px solid;
+}
+
+.tool-card.danger {
+  border-color: #FCA5A5;
+  background: linear-gradient(135deg, #FFFBFB 0%, #FEF2F2 100%);
+}
+
+.tool-card.info {
+  border-color: #93C5FD;
+  background: linear-gradient(135deg, #F0F9FF 0%, #DBEAFE 100%);
+}
+
+.tool-header h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 0.5rem;
+}
+
+.tool-header p {
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
+.tool-content {
+  margin-top: 1rem;
+}
+
+.tool-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 0.925rem;
+  font-family: inherit;
+  resize: vertical;
+  margin-bottom: 1rem;
+}
+
+.tool-input:focus {
+  outline: none;
+  border-color: #00DC82;
+}
+
+.btn-danger {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-danger:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #00C16A 0%, #00DC82 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.925rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 193, 106, 0.3);
+}
+
+.stats-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+}
+
+.stat-row span {
+  color: #6B7280;
+  font-size: 0.925rem;
+}
+
+.stat-row strong {
+  color: #1F2937;
+  font-size: 1.125rem;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .header-content {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .logo-section {
+    flex-wrap: wrap;
+  }
+
+  .logo-section h1 {
+    font-size: 1.5rem;
+  }
+
+  .admin-main {
+    padding: 2rem 1.5rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 2rem;
+  }
+
+  .stamp-form-card {
+    padding: 2rem;
+  }
+
+  .radio-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-main {
+    padding: 1.5rem 1rem;
+  }
+
+  .welcome-section h2 {
+    font-size: 1.75rem;
+  }
+
+  .stamp-form-card {
+    padding: 1.5rem;
+  }
+
+  .day-info {
+    padding: 1.25rem 1.5rem;
+  }
+}
+</style>
