@@ -246,6 +246,8 @@ export const useStempelCard = () => {
 
   // Check if user is admin
   const isUserAdmin = async (email: string) => {
+    // sowasvonphilipp23@gmail.com is always an admin
+    if (email === 'sowasvonphilipp23@gmail.com') return true
     try {
       const adminRef = doc($db, 'admins', email)
       const adminDoc = await getDoc(adminRef)

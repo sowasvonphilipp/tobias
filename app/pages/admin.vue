@@ -781,13 +781,13 @@ onMounted(async () => {
 
 const loadInitialData = async () => {
   try {
-    // Load Tobias's data (assuming specific user ID or email)
-    const tobiasEmail = 'tobias@example.com' // Adjust as needed
-    const tobiasId = 'tobias-user-id' // Adjust as needed
+    // Load Tobias's data via the shared config
+    const resolvedTobiasId = await getTobiasUserId()
+    tobiasUserId.value = resolvedTobiasId
     
     const [stats, stamps, config] = await Promise.all([
-      getUserStats(tobiasId).catch(() => ({ currentStreak: 0, totalStamps: 0, onTimeCount: 0, lateCount: 0 })),
-      getRecentStamps(tobiasId, 10).catch(() => []),
+      getUserStats(resolvedTobiasId).catch(() => ({ currentStreak: 0, totalStamps: 0, onTimeCount: 0, lateCount: 0 })),
+      getRecentStamps(resolvedTobiasId, 10).catch(() => []),
       getXPConfig().catch(() => xpConfig.value)
     ])
     
